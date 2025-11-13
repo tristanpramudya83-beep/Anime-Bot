@@ -88,5 +88,55 @@
     "role": "bot",
     "content": "Asiiiik! 🥳🥳🥳 Akhirnya kamu semangat juga! Senengnyaaa! 🥰\n\nOke oke, ini tebakannya! 🤔 Dengerin baik-baik yaaa! 👂\n\n**Siapakah nama Kaiju yang pertama kali Kafka Hibino kalahkan setelah dia mendapatkan kekuatan Kaiju No. 8?** 😈\n\nAwas yaaa, jangan nyontek Google! 🙅‍♀️ Mikir sendiri dooong! 😏 Aku tunggu jawabannya! ⏳ Jangan lama-lama yaaa! Penasaran banget nih! 😍 *goyang-goyang gak sabar* 💃\n",
     "timestamp": "2025-10-26T11:58:02.228290"
+  },
+  {
+    "role": "user",
+    "content": "Halo",
+    "timestamp": "2025-11-10T23:20:18.615042"
+  },
+  {
+    "role": "bot",
+    "content": "HALOOOOOO?! 📣📣📣 *loncat-loncat kegirangan* \\(≧∇≦)/ Akhirnya bales lagi! Kirain kamu lupa sama aku! 🥺 Jangan bikin aku khawatir dooong! 😫\n\nUdah mikirin jawabannya belom? 🤔 Tebakan tentang Kaiju No. 8 tadi loh! 😈 Aku penasaran banget nih! 🤩 Jangan bilang kamu nyerah yaaa?! 🥺 Semangat dooong! 💪\n\nAtau... mau aku kasih petunjuk? 🤫 Tapi jangan bilang siapa-siapa yaaa! Ini rahasia kita berdua! 😉 *kedip-kedip* 😉\n",
+    "timestamp": "2025-11-10T23:20:21.996759"
+  },
+  {
+    "role": "user",
+    "content": "Oh oke oke, apa petunjuknya",
+    "timestamp": "2025-11-10T23:20:54.737587"
+  },
+  {
+    "role": "bot",
+    "content": "Maaf, terjadi error saat memproses pertanyaan: 403 Your API key was reported as leaked. Please use another API key.",
+    "timestamp": "2025-11-10T23:20:54.909922"
+  },
+  {
+    "role": "user",
+    "content": "Halo",
+    "timestamp": "2025-11-10T23:21:55.253317"
+  },
+  {
+    "role": "bot",
+    "content": "Maaf, terjadi error saat memproses pertanyaan: 403 Your API key was reported as leaked. Please use another API key.",
+    "timestamp": "2025-11-10T23:21:55.346067"
+  },
+  {
+    "role": "user",
+    "content": "Hey",
+    "timestamp": "2025-11-10T23:23:11.142645"
+  },
+  {
+    "role": "bot",
+    "content": "HEEEYYYYY! 🤩🥳 Akhirnya dateng jugaaa! Kirain aku udah dianggurin! 🥺 Jangan lama-lama ngilang dong! Aku kan jadi kangen! 😫\n\nGimana? Petunjuknya mau gak nih? 🤫 Ini kesempatan emas loh! 😎 Tapi inget yaaa, ini rahasia kita! 🤐 Janji gak bakal bocorin ke siapa-siapa? 🤞\n\nAtau... kamu udah nemu jawabannya sendiri?! 😲 Wih, keren banget kalau gitu! 😎 Buruan kasih tau aku dooong! Penasaran maksimal nih! 🔥🔥🔥 *goyang-goyang heboh* 💃💃💃\n",
+    "timestamp": "2025-11-10T23:23:13.627067"
+  },
+  {
+    "role": "user",
+    "content": "Oke oke, aman kok",
+    "timestamp": "2025-11-10T23:24:36.731552"
+  },
+  {
+    "role": "bot",
+    "content": "Maaf, terjadi error saat memproses pertanyaan: 429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",
+    "timestamp": "2025-11-10T23:24:42.605188"
   }
 ]

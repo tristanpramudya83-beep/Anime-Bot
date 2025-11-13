@@ -9,6 +9,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
+import asyncio
 
 # Load environment variables
 load_dotenv()
@@ -29,6 +30,50 @@ DAILY_REWARD = 100  # Daily login reward
 GAME_REWARD_MIN = 10
 GAME_REWARD_MAX = 50
 
+# Character gacha data
+CHARACTER_GACHA = {
+    "SSR": {  # 5% chance
+        "chance": 5,
+        "characters": [
+            {"name": "Rem", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/10/24/20/39/03/136647945_p0_square1200.jpg", "anime": "Re:Zero"},
+            {"name": "Mikasa", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/11/05/22/12/48/137133871_p0_square1200.jpg", "anime": "Attack on Titan"},
+            {"name": "Zero Two", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/09/27/00/32/32/135545960_p0_square1200.jpg", "anime": "Darling in the Franxx"},
+            {"name": "Alya", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/11/09/14/01/37/137269614_p0_square1200.jpg", "anime": "Roshidere"},
+            {"name": "Asuna", "image": "https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2025/10/28/12/02/51/136792583_p0_custom1200.jpg", "anime": "Sword Art Online"}
+        ]
+    },
+    "SR": {  # 15% chance
+        "chance": 15,
+        "characters": [
+            {"name": "Hinata", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/10/08/04/47/47/136008613_p0_square1200.jpg", "anime": "Naruto"},
+            {"name": "Ochaco", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/11/04/21/37/48/137094463_p0_square1200.jpg", "anime": "My Hero Academia"},
+            {"name": "Lucy", "image": "https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2025/11/06/10/27/33/137150477_p0_custom1200.jpg", "anime": "Fairy Tail"},
+            {"name": "Yoruichi", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/11/08/00/54/54/137212368_p0_square1200.jpg", "anime": "Bleach"},
+            {"name": "Winry", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/10/04/11/30/34/135855101_p0_square1200.jpg", "anime": "Fullmetal Alchemist"}
+        ]
+    },
+    "R": {  # 30% chance
+        "chance": 30,
+        "characters": [
+            {"name": "Itsuki", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/11/02/08/24/42/136994040_p0_square1200.jpg", "anime": "Gotoubun no Hanayome"},
+            {"name": "Nino", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/10/24/10/22/10/136632672_p0_square1200.jpg", "anime": "Gotoubun no Hanayome"},
+            {"name": "Waguri", "image": "https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2025/09/04/19/19/50/134705517_p0_custom1200.jpg", "anime": "Kaoru Hana wa Rin to Saku"},
+            {"name": "Erza", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/09/06/23/01/54/134792097_p0_square1200.jpg", "anime": "Fairy Tail"},
+            {"name": "Inori", "image": "https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2025/09/23/01/37/47/135426424_p0_custom1200.jpg", "anime": "Guilty Crown"}
+        ]
+    },
+    "N": {  # 50% chance
+        "chance": 50,
+        "characters": [
+            {"name": "Yuki", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/05/27/05/31/50/130857774_p0_square1200.jpg", "anime": "Roshidere"},
+            {"name": "Yui", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2024/12/23/23/00/29/125463133_p0_square1200.jpg", "anime": "K-On!"},
+            {"name": "Mio", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2024/03/20/00/55/09/117074256_p0_square1200.jpg", "anime": "K-On!"},
+            {"name": "Ritsu", "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2021/09/25/00/04/15/92990847_p0_square1200.jpg", "anime": "K-On!"},
+            {"name": "Miku", "image": "https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2025/06/21/14/28/31/131803442_p0_custom1200.jpg", "anime": "Gotoubun no Hanayome"}
+        ]
+    }
+}
+
 # Data storage paths
 DATA_DIR = Path('user_data')
 DATA_DIR.mkdir(exist_ok=True)
@@ -37,6 +82,7 @@ CHAT_HISTORY_DIR = DATA_DIR / 'chat_history'
 CHAT_HISTORY_DIR.mkdir(exist_ok=True)
 USER_POINTS_FILE = DATA_DIR / 'user_points.json'
 USER_VIP_FILE = DATA_DIR / 'user_vip.json'
+USER_CHARACTERS_FILE = DATA_DIR / 'user_characters.json'
 DAILY_CLAIMS_FILE = DATA_DIR / 'daily_claims.json'
 STICKERS_DIR = DATA_DIR / 'stickers'
 STICKERS_DIR.mkdir(exist_ok=True)
@@ -138,6 +184,52 @@ def save_daily_claims(claims_data):
     with open(DAILY_CLAIMS_FILE, 'w', encoding='utf-8') as f:
         json.dump(claims_data, f, indent=2, ensure_ascii=False)
 
+def load_user_characters():
+    if USER_CHARACTERS_FILE.exists():
+        try:
+            with open(USER_CHARACTERS_FILE, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if content:
+                    data = json.loads(content)
+                    # Ensure we return a dictionary
+                    return data if isinstance(data, dict) else {}
+                return {}
+        except (json.JSONDecodeError, Exception) as e:
+            print(f"[ERROR] Error loading user characters: {e}")
+            return {}
+    return {}
+
+def get_user_characters(user_id):
+    """Get characters for specific user"""
+    characters_data = load_user_characters()
+    user_chars = characters_data.get(user_id, {})
+    # Ensure we return a dictionary, not None
+    return user_chars if isinstance(user_chars, dict) else {}
+
+def save_user_characters(characters_data):
+    with open(USER_CHARACTERS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(characters_data, f, indent=2, ensure_ascii=False)
+
+def add_character_to_inventory(user_id, character, tier):
+    inventory = load_user_characters()
+    if user_id not in inventory:
+        inventory[user_id] = {}
+    
+    char_name = character["name"]
+    if char_name not in inventory[user_id]:
+        inventory[user_id][char_name] = {
+            "name": character["name"],
+            "anime": character["anime"],
+            "image": character["image"],
+            "tier": tier,
+            "count": 1
+        }
+    else:
+        inventory[user_id][char_name]["count"] += 1
+    
+    save_user_characters(inventory)
+    return True
+
 def get_user_points(user_id):
     points_data = load_user_points()
     return points_data.get(user_id, 0)
@@ -147,6 +239,37 @@ def add_user_points(user_id, amount):
     points_data[user_id] = points_data.get(user_id, 0) + amount
     save_user_points(points_data)
     return points_data[user_id]
+
+def deduct_user_points(user_id, amount):
+    points_data = load_user_points()
+    current_points = points_data.get(user_id, 0)
+    if current_points < amount:
+        return False
+    points_data[user_id] = current_points - amount
+    save_user_points(points_data)
+    return True
+
+def transfer_points(sender_id, receiver_id, amount):
+    """Transfer points from one user to another"""
+    if sender_id == receiver_id:
+        return False, "Anda tidak dapat mentransfer point ke diri sendiri!"
+    
+    if amount <= 0:
+        return False, "Jumlah transfer harus lebih dari 0!"
+    
+    # Check if sender has enough points
+    sender_points = get_user_points(sender_id)
+    if sender_points < amount:
+        return False, f"Point tidak cukup! Anda hanya memiliki {sender_points} point."
+    
+    # Deduct points from sender
+    if not deduct_user_points(sender_id, amount):
+        return False, "Gagal mengurangi point pengirim!"
+    
+    # Add points to receiver
+    add_user_points(receiver_id, amount)
+    
+    return True, f"Berhasil mentransfer {amount} point!"
 
 def is_vip(user_id):
     vip_data = load_user_vip()
@@ -366,6 +489,595 @@ async def handle_setup_dm(message):
         await message.channel.send(f"❌ Error saat setup: {str(e)}")
 
 
+@bot.command(name='transfer')
+async def transfer_command(ctx, recipient: discord.Member = None, amount: int = None):
+    """Transfer points to another user"""
+    if recipient is None or amount is None:
+        await ctx.send("❌ Format salah! Gunakan: `!transfer @user jumlah`")
+        return
+    
+    sender_id = str(ctx.author.id)
+    receiver_id = str(recipient.id)
+    
+    success, message = transfer_points(sender_id, receiver_id, amount)
+    
+    if success:
+        sender_points = get_user_points(sender_id)
+        receiver_points = get_user_points(receiver_id)
+        
+        embed = discord.Embed(
+            title="💸 Transfer Point Berhasil!",
+            description=f"{ctx.author.mention} mentransfer **{amount} point** ke {recipient.mention}",
+            color=discord.Color.green()
+        )
+        embed.add_field(name="Sisa Point Pengirim", value=f"{sender_points} point", inline=True)
+        embed.add_field(name="Point Penerima", value=f"{receiver_points} point", inline=True)
+        
+        await ctx.send(embed=embed)
+    else:
+        await ctx.send(f"❌ {message}")
+
+@bot.command(name='gacha')
+async def gacha_command(ctx):
+    """Play gacha game to earn points"""
+    user_id = str(ctx.author.id)
+    cost = 50  # Cost to play
+    
+    # Check if user has enough points
+    user_points = get_user_points(user_id)
+    if user_points < cost:
+        await ctx.send(f"❌ Point tidak cukup! Kamu butuh {cost} point untuk bermain gacha. Kamu hanya memiliki {user_points} point.")
+        return
+    
+    # Deduct points
+    deduct_user_points(user_id, cost)
+    
+    # Determine rewards
+    import random
+    
+    # Define gacha tiers and rewards
+    tiers = {
+        "SSR": {"chance": 5, "min_reward": 200, "max_reward": 500},
+        "SR": {"chance": 15, "min_reward": 100, "max_reward": 200},
+        "R": {"chance": 30, "min_reward": 50, "max_reward": 100},
+        "N": {"chance": 50, "min_reward": 10, "max_reward": 50}
+    }
+    
+    # Roll for tier
+    roll = random.randint(1, 100)
+    cumulative_chance = 0
+    selected_tier = "N"  # Default
+    
+    for tier, data in tiers.items():
+        cumulative_chance += data["chance"]
+        if roll <= cumulative_chance:
+            selected_tier = tier
+            break
+    
+    # Determine reward amount
+    tier_data = tiers[selected_tier]
+    reward = random.randint(tier_data["min_reward"], tier_data["max_reward"])
+    
+    # Add reward
+    add_user_points(user_id, reward)
+    
+    # Prepare response
+    tier_emojis = {
+        "SSR": "🌟",
+        "SR": "✨",
+        "R": "⭐",
+        "N": "⚪"
+    }
+    
+    embed = discord.Embed(
+        title=f"{tier_emojis[selected_tier]} Gacha Result: {selected_tier} Tier!",
+        description=f"Kamu mendapatkan **{reward} point**!",
+        color=discord.Color.gold()
+    )
+    
+    embed.add_field(name="Biaya", value=f"{cost} point", inline=True)
+    embed.add_field(name="Hadiah", value=f"{reward} point", inline=True)
+    embed.add_field(name="Keuntungan", value=f"{reward - cost} point", inline=True)
+    
+    new_balance = get_user_points(user_id)
+    embed.set_footer(text=f"Saldo point: {new_balance}")
+    
+    await ctx.send(embed=embed)
+
+@bot.command(name='charagacha')
+async def character_gacha(ctx):
+    """Gacha karakter anime"""
+    user_id = str(ctx.author.id)
+    cost = 100  # Cost to play character gacha
+
+    # Check if user has enough points
+    user_points = get_user_points(user_id)
+    if user_points < cost:
+        await ctx.send(f"❌ Point tidak cukup! Kamu butuh {cost} point untuk gacha karakter. Kamu hanya memiliki {user_points} point.")
+        return
+
+    # Deduct points
+    deduct_user_points(user_id, cost)
+
+    # Determine rarity
+    import random
+    roll = random.randint(1, 100)
+    cumulative_chance = 0
+    selected_rarity = "N"  # Default
+
+    for rarity, data in CHARACTER_GACHA.items():
+        cumulative_chance += data["chance"]
+        if roll <= cumulative_chance:
+            selected_rarity = rarity
+            break
+
+    # Get random character from selected rarity
+    characters = CHARACTER_GACHA[selected_rarity]["characters"]
+    character = random.choice(characters)
+
+    # Add character to user's inventory
+    add_character_to_inventory(user_id, character, selected_rarity)
+
+    # Prepare response
+    rarity_colors = {
+        "SSR": discord.Color.gold(),
+        "SR": discord.Color.purple(),
+        "R": discord.Color.blue(),
+        "N": discord.Color.green()
+    }
+
+    rarity_emojis = {
+        "SSR": "🌟",
+        "SR": "✨",
+        "R": "⭐",
+        "N": "⚪"
+    }
+
+    embed = discord.Embed(
+        title=f"{rarity_emojis[selected_rarity]} Gacha Result: {selected_rarity} Tier!",
+        description=f"Kamu mendapat **{character['name']}** dari {character['anime']}!",
+        color=rarity_colors[selected_rarity]
+    )
+
+    embed.set_image(url=character['image'])
+    embed.add_field(name="Biaya", value=f"{cost} point", inline=True)
+    embed.add_field(name="Rarity", value=f"{selected_rarity} Tier", inline=True)
+    
+    new_balance = get_user_points(user_id)
+    embed.set_footer(text=f"Karakter telah ditambahkan ke inventory. Sisa point: {new_balance}")
+
+    await ctx.send(embed=embed)
+
+@bot.command(name='inventory')
+async def inventory_command(ctx):
+    """Tampilkan inventory karakter"""
+    user_id = str(ctx.author.id)
+    user_characters = get_user_characters(user_id)
+
+    if not user_characters:
+        await ctx.send("🎒 Inventory kamu kosong! Mainkan `!charagacha` untuk mendapatkan karakter.")
+        return
+
+    # Convert dictionary to list for sorting
+    character_list = list(user_characters.values())
+
+    # Sort characters by rarity
+    rarity_order = {"SSR": 0, "SR": 1, "R": 2, "N": 3}
+    sorted_characters = sorted(character_list, key=lambda x: rarity_order[x['tier']])
+
+    # Pagination
+    items_per_page = 5
+    pages = [sorted_characters[i:i + items_per_page] for i in range(0, len(sorted_characters), items_per_page)]
+    total_pages = len(pages)
+
+    current_page = 0
+
+    def create_embed(page_num):
+        embed = discord.Embed(
+            title=f"🎒 Inventory Karakter - {ctx.author.name}",
+            description=f"Halaman {page_num + 1}/{total_pages}",
+            color=discord.Color.blue()
+        )
+
+        for char in pages[page_num]:
+            embed.add_field(
+                name=f"{char['name']} ({char['tier']}) x{char['count']}",
+                value=f"Anime: {char['anime']}",
+                inline=False
+            )
+        
+        embed.set_footer(text="Gunakan reaksi untuk navigasi halaman.")
+        return embed
+
+    message = await ctx.send(embed=create_embed(current_page))
+
+    if total_pages > 1:
+        await message.add_reaction("⬅️")
+        await message.add_reaction("➡️")
+
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) in ["⬅️", "➡️"]
+
+        while True:
+            try:
+                reaction, user = await bot.wait_for("reaction_add", timeout=60.0, check=check)
+
+                if str(reaction.emoji) == "➡️" and current_page < total_pages - 1:
+                    current_page += 1
+                    await message.edit(embed=create_embed(current_page))
+                elif str(reaction.emoji) == "⬅️" and current_page > 0:
+                    current_page -= 1
+                    await message.edit(embed=create_embed(current_page))
+
+                await message.remove_reaction(reaction, user)
+
+            except asyncio.TimeoutError:
+                await message.clear_reactions()
+                break
+
+@bot.command(name='sellchar')
+async def sell_character(ctx):
+    """Jual karakter dari inventory dengan harga berdasarkan tier"""
+    user_id = str(ctx.author.id)
+    user_characters = get_user_characters(user_id)
+    
+    if not user_characters:
+        await ctx.send("🎒 Inventory kamu kosong! Mainkan `!charagacha` untuk mendapatkan karakter.")
+        return
+    
+    # Harga berdasarkan tier
+    tier_prices = {
+        "SSR": 500,
+        "SR": 300,
+        "R": 150,
+        "N": 50
+    }
+    
+    # Convert dictionary to list for sorting
+    character_list = list(user_characters.values())
+    
+    # Sort characters by rarity
+    rarity_order = {"SSR": 0, "SR": 1, "R": 2, "N": 3}
+    sorted_characters = sorted(character_list, key=lambda x: rarity_order[x['tier']])
+    
+    # Create selection embed
+    embed = discord.Embed(
+        title=f"💰 Jual Karakter - {ctx.author.name}",
+        description="Pilih karakter yang ingin dijual dengan memasukkan nomor karakter.",
+        color=discord.Color.gold()
+    )
+    
+    for idx, char in enumerate(sorted_characters, 1):
+        price = tier_prices.get(char['tier'], 0)
+        embed.add_field(
+            name=f"{idx}. {char['name']} ({char['tier']}) x{char['count']}",
+            value=f"Anime: {char['anime']}\nHarga: {price} point per karakter",
+            inline=False
+        )
+    
+    embed.set_footer(text="Masukkan nomor karakter untuk menjual.")
+    await ctx.send(embed=embed)
+    
+    # Wait for user selection
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel and m.content.isdigit()
+    
+    try:
+        msg = await bot.wait_for('message', check=check, timeout=60.0)
+        selection = int(msg.content)
+        
+        if 1 <= selection <= len(sorted_characters):
+            selected_char = sorted_characters[selection-1]
+            char_name = selected_char['name']
+            char_tier = selected_char['tier']
+            char_count = selected_char['count']
+            price = tier_prices.get(char_tier, 0)
+            
+            # Ask for quantity to sell
+            quantity_embed = discord.Embed(
+                title="📊 Masukkan Jumlah",
+                description=f"Kamu memiliki **{char_count}** karakter **{char_name}** ({char_tier}).\n"
+                           f"Berapa banyak yang ingin kamu jual?\n"
+                           f"Harga per karakter: **{price} point**",
+                color=discord.Color.blue()
+            )
+            quantity_embed.set_footer(text=f"Masukkan jumlah (1-{char_count}) atau '0' untuk batal.")
+            await ctx.send(embed=quantity_embed)
+            
+            # Wait for quantity input
+            def quantity_check(m):
+                if m.author == ctx.author and m.channel == ctx.channel:
+                    if m.content.isdigit():
+                        qty = int(m.content)
+                        return 0 <= qty <= char_count
+                return False
+            
+            try:
+                qty_msg = await bot.wait_for('message', check=quantity_check, timeout=60.0)
+                quantity = int(qty_msg.content)
+                
+                if quantity == 0:
+                    await ctx.send("❌ Penjualan dibatalkan.")
+                    return
+                
+                total_price = price * quantity
+                
+                # Create confirmation embed
+                confirm_embed = discord.Embed(
+                    title="🛒 Konfirmasi Jual",
+                    description=f"Apakah kamu yakin ingin menjual **{quantity}** karakter **{char_name}**?",
+                    color=discord.Color.orange()
+                )
+                confirm_embed.add_field(name="Tier", value=char_tier, inline=True)
+                confirm_embed.add_field(name="Jumlah", value=f"{quantity}", inline=True)
+                confirm_embed.add_field(name="Total Harga", value=f"{total_price} point", inline=True)
+                confirm_embed.add_field(name="Sisa Karakter", value=f"{char_count - quantity}", inline=True)
+                confirm_embed.add_field(name="Anime", value=selected_char['anime'], inline=False)
+                confirm_embed.set_footer(text="Balas dengan 'ya' untuk konfirmasi atau 'tidak' untuk batal.")
+                
+                await ctx.send(embed=confirm_embed)
+                
+                # Wait for confirmation
+                def confirm_check(m):
+                    return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ['ya', 'tidak', 'yes', 'no', 'y', 'n']
+                
+                try:
+                    confirm_msg = await bot.wait_for('message', check=confirm_check, timeout=30.0)
+                    if confirm_msg.content.lower() in ['ya', 'yes', 'y']:
+                        # Process sale
+                        # Load the entire characters data structure first to ensure consistency
+                        all_characters = load_user_characters()
+                        
+                        # Check if user exists and has the character with sufficient quantity
+                        if (user_id in all_characters and 
+                            char_name in all_characters[user_id] and 
+                            all_characters[user_id][char_name]['count'] >= quantity):
+                            
+                            # Reduce count for the specific character
+                            all_characters[user_id][char_name]['count'] -= quantity
+                            
+                            # Get the new count for display and decision making
+                            new_count = all_characters[user_id][char_name]['count']
+                            
+                            # Remove character if count reaches 0
+                            if new_count <= 0:
+                                del all_characters[user_id][char_name]
+                                remaining_text = "Karakter dihapus dari inventory"
+                            else:
+                                remaining_text = f"{new_count}"
+                            
+                            # Save the entire inventory
+                            save_user_characters(all_characters)
+                            
+                            # Add points to user
+                            add_user_points(user_id, total_price)
+                            
+                            # Get updated points
+                            new_points = get_user_points(user_id)
+                            
+                            # Create success embed
+                            success_embed = discord.Embed(
+                                title="✅ Penjualan Berhasil!",
+                                description=f"Kamu telah menjual **{quantity}** karakter **{char_name}** dan mendapatkan **{total_price} point**!",
+                                color=discord.Color.green()
+                            )
+                            success_embed.add_field(name="Sisa Karakter", value=remaining_text, inline=True)
+                            success_embed.set_footer(text=f"Total point: {new_points}")
+                            
+                            await ctx.send(embed=success_embed)
+                        else:
+                            await ctx.send("❌ Karakter tidak ditemukan di inventory atau jumlah tidak mencukupi!")
+                    else:
+                        await ctx.send("❌ Penjualan dibatalkan.")
+                except asyncio.TimeoutError:
+                    await ctx.send("⏰ Waktu habis! Penjualan dibatalkan.")
+            except asyncio.TimeoutError:
+                await ctx.send("⏰ Waktu habis! Silakan coba lagi.")
+        else:
+            await ctx.send("❌ Nomor karakter tidak valid!")
+    except asyncio.TimeoutError:
+        await ctx.send("⏰ Waktu habis! Silakan coba lagi.")
+
+@bot.command(name='duel')
+async def duel_command(ctx, opponent: discord.Member = None, bet: int = None):
+    """Duel another user using characters from inventory"""
+    if opponent is None or bet is None:
+        await ctx.send("❌ Format salah! Gunakan: `!duel @user jumlah_taruhan`")
+        return
+    
+    if opponent.id == ctx.author.id:
+        await ctx.send("❌ Kamu tidak bisa berduel dengan dirimu sendiri!")
+        return
+    
+    if bet <= 0:
+        await ctx.send("❌ Jumlah taruhan harus lebih dari 0!")
+        return
+    
+    challenger_id = str(ctx.author.id)
+    opponent_id = str(opponent.id)
+    
+    # Check if both users have enough points
+    challenger_points = get_user_points(challenger_id)
+    opponent_points = get_user_points(opponent_id)
+    
+    if challenger_points < bet:
+        await ctx.send(f"❌ Point tidak cukup! Kamu hanya memiliki {challenger_points} point.")
+        return
+    
+    if opponent_points < bet:
+        await ctx.send(f"❌ {opponent.display_name} tidak memiliki cukup point! Mereka hanya memiliki {opponent_points} point.")
+        return
+    
+    # Check if both users have characters in inventory
+    challenger_chars = get_user_characters(challenger_id)
+    opponent_chars = get_user_characters(opponent_id)
+    
+    if not challenger_chars:
+        await ctx.send(f"❌ Kamu tidak memiliki karakter di inventaris! Gunakan `!charagacha` untuk mendapatkan karakter.")
+        return
+    
+    if not opponent_chars:
+        await ctx.send(f"❌ {opponent.display_name} tidak memiliki karakter di inventaris!")
+        return
+    
+    # Create duel request embed
+    embed = discord.Embed(
+        title="⚔️ Tantangan Duel!",
+        description=f"{ctx.author.mention} menantang {opponent.mention} untuk berduel karakter dengan taruhan **{bet} point**!",
+        color=discord.Color.red()
+    )
+    embed.set_footer(text=f"Opponent, ketik 'accept' untuk menerima atau 'decline' untuk menolak dalam 30 detik.")
+    
+    duel_msg = await ctx.send(embed=embed)
+    
+    # Wait for opponent's response
+    def check(m):
+        return m.author.id == opponent.id and m.channel == ctx.channel and m.content.lower() in ['accept', 'decline']
+    
+    try:
+        import asyncio
+        response = await bot.wait_for('message', check=check, timeout=30.0)
+        
+        if response.content.lower() == 'decline':
+            await ctx.send(f"🛑 {opponent.display_name} menolak tantangan duel!")
+            return
+        
+        # Duel accepted, now select characters
+        await ctx.send(f"⚔️ Duel diterima! Silakan pilih karakter kalian masing-masing.")
+        
+        # Function to get character selection from user
+        async def select_character(user, user_chars, user_name):
+            # Create character selection embed
+            char_embed = discord.Embed(
+                title=f"🎯 {user_name}, pilih karaktermu!",
+                description="Balas dengan nomor karakter yang ingin digunakan:",
+                color=discord.Color.blue()
+            )
+            
+            # List characters with their tiers
+            for i, (char_name, char_data) in enumerate(user_chars.items(), 1):
+                char_embed.add_field(
+                    name=f"{i}. {char_name}",
+                    value=f"**Tier:** {char_data['tier']}\n**Jumlah:** {char_data['count']}",
+                    inline=False
+                )
+            
+            await ctx.send(embed=char_embed)
+            
+            def char_check(m):
+                try:
+                    selection = int(m.content)
+                    return (m.author.id == user.id and 
+                           m.channel == ctx.channel and 
+                           1 <= selection <= len(user_chars))
+                except ValueError:
+                    return False
+            
+            try:
+                char_response = await bot.wait_for('message', check=char_check, timeout=60.0)
+                selection = int(char_response.content)
+                selected_char_name = list(user_chars.keys())[selection - 1]
+                return selected_char_name
+            except asyncio.TimeoutError:
+                return None
+        
+        # Get character selections
+        challenger_char_name = await select_character(ctx.author, challenger_chars, ctx.author.display_name)
+        if challenger_char_name is None:
+            await ctx.send("⏰ Waktu habis untuk memilih karakter!")
+            return
+        
+        opponent_char_name = await select_character(opponent, opponent_chars, opponent.display_name)
+        if opponent_char_name is None:
+            await ctx.send("⏰ Waktu habis untuk lawan memilih karakter!")
+            return
+        
+        # Get character data
+        challenger_char = challenger_chars[challenger_char_name]
+        opponent_char = opponent_chars[opponent_char_name]
+        
+        # Battle simulation with tier-based logic
+        await ctx.send(f"⚔️ Duel dimulai! {ctx.author.display_name} menggunakan **{challenger_char_name}** vs {opponent.display_name} menggunakan **{opponent_char_name}**!")
+        await asyncio.sleep(2)
+        
+        # Define tier hierarchy (higher is better)
+        tier_hierarchy = {
+            'SSR': 5,
+            'SR': 4,
+            'R': 3,
+            'N': 2
+        }
+        
+        challenger_tier_level = tier_hierarchy.get(challenger_char['tier'], 1)
+        opponent_tier_level = tier_hierarchy.get(opponent_char['tier'], 1)
+        
+        # Determine winner based on tier
+        if challenger_tier_level > opponent_tier_level:
+            winner = ctx.author
+            winner_id = challenger_id
+            loser = opponent
+            loser_id = opponent_id
+            win_reason = f"**{challenger_char_name}** (Tier {challenger_char['tier']}) mengalahkan **{opponent_char_name}** (Tier {opponent_char['tier']})!"
+        elif opponent_tier_level > challenger_tier_level:
+            winner = opponent
+            winner_id = opponent_id
+            loser = ctx.author
+            loser_id = challenger_id
+            win_reason = f"**{opponent_char_name}** (Tier {opponent_char['tier']}) mengalahkan **{challenger_char_name}** (Tier {challenger_char['tier']})!"
+        else:
+            # Same tier - random outcome (50/50 chance)
+            if random.random() < 0.5:
+                winner = ctx.author
+                winner_id = challenger_id
+                loser = opponent
+                loser_id = opponent_id
+                win_reason = f"Pertarungan sengit! **{challenger_char_name}** menang secara dramatis melawan **{opponent_char_name}** (Tier {challenger_char['tier']})!"
+            else:
+                winner = opponent
+                winner_id = opponent_id
+                loser = ctx.author
+                loser_id = challenger_id
+                win_reason = f"Pertarungan sengit! **{opponent_char_name}** menang secara dramatis melawan **{challenger_char_name}** (Tier {opponent_char['tier']})!"
+        
+        # Transfer points
+        deduct_user_points(loser_id, bet)
+        add_user_points(winner_id, bet)
+        
+        # Announce winner
+        result_embed = discord.Embed(
+            title="🏆 Hasil Duel Karakter!",
+            description=win_reason,
+            color=discord.Color.gold()
+        )
+        
+        result_embed.add_field(
+            name=f"{ctx.author.display_name}",
+            value=f"Karakter: **{challenger_char_name}** (Tier {challenger_char['tier']})",
+            inline=True
+        )
+        
+        result_embed.add_field(
+            name=f"{opponent.display_name}",
+            value=f"Karakter: **{opponent_char_name}** (Tier {opponent_char['tier']})",
+            inline=True
+        )
+        
+        result_embed.add_field(
+            name="💰 Hadiah",
+            value=f"{winner.mention} memenangkan **{bet} point**!",
+            inline=False
+        )
+        
+        winner_points = get_user_points(winner_id)
+        loser_points = get_user_points(loser_id)
+        
+        result_embed.set_footer(text=f"Points: {winner.display_name} ({winner_points}) | {loser.display_name} ({loser_points})")
+        
+        await ctx.send(embed=result_embed)
+        
+    except asyncio.TimeoutError:
+        await ctx.send(f"⏰ Waktu habis! {opponent.display_name} tidak merespon tantangan.")
+
 @bot.command(name='help')
 async def help_command(ctx):
     """Show help message"""
@@ -389,7 +1101,7 @@ async def help_command(ctx):
     
     embed.add_field(
         name="🎮 Game & Points",
-        value="`!daily` - Claim daily reward\n`!game` - Play mini games\n`!points` - Check your points\n`!leaderboard` - View top players",
+        value="`!daily` - Claim daily reward\n`!game` - Play mini games\n`!points` - Check your points\n`!leaderboard` - View top players\n`!gacha` - Main gacha (50 point)\n`!charagacha` - Gacha karakter anime (100 point)\n`!inventory` - Lihat koleksi karakter\n`!sellchar` - Jual karakter dari inventory\n`!duel @user jumlah` - Tantang user lain dengan karakter\n`!transfer @user jumlah` - Transfer point",
         inline=False
     )
     

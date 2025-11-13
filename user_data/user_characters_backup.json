@@ -1,0 +1,58 @@
+{
+  "Erza": {
+    "name": "Erza",
+    "anime": "Fairy Tail",
+    "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/09/06/23/01/54/134792097_p0_square1200.jpg",
+    "tier": "R",
+    "count": 1
+  },
+  "Inori": {
+    "name": "Inori",
+    "anime": "Guilty Crown",
+    "image": "https://i.pximg.net/c/250x250_80_a2/custom-thumb/img/2025/09/23/01/37/47/135426424_p0_custom1200.jpg",
+    "tier": "R",
+    "count": 1
+  },
+  "Yuki": {
+    "name": "Yuki",
+    "anime": "Roshidere",
+    "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/05/27/05/31/50/130857774_p0_square1200.jpg",
+    "tier": "N",
+    "count": 1
+  },
+  "Mio": {
+    "name": "Mio",
+    "anime": "K-On!",
+    "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2024/03/20/00/55/09/117074256_p0_square1200.jpg",
+    "tier": "N",
+    "count": 1
+  },
+  "Hinata": {
+    "name": "Hinata",
+    "anime": "Naruto",
+    "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/10/08/04/47/47/136008613_p0_square1200.jpg",
+    "tier": "SR",
+    "count": 1
+  },
+  "Yui": {
+    "name": "Yui",
+    "anime": "K-On!",
+    "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2024/12/23/23/00/29/125463133_p0_square1200.jpg",
+    "tier": "N",
+    "count": 1
+  },
+  "Ritsu": {
+    "name": "Ritsu",
+    "anime": "K-On!",
+    "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2021/09/25/00/04/15/92990847_p0_square1200.jpg",
+    "tier": "N",
+    "count": 1
+  },
+  "Ochaco": {
+    "name": "Ochaco",
+    "anime": "My Hero Academia",
+    "image": "https://i.pximg.net/c/250x250_80_a2/img-master/img/2025/11/04/21/37/48/137094463_p0_square1200.jpg",
+    "tier": "SR",
+    "count": 1
+  }
+}
